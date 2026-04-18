@@ -32,18 +32,17 @@ button {
   background: #38bdf8;
   cursor: pointer;
   border-radius: 8px;
-  margin: 10px;
+  margin: 5px;
 }
 
 .card {
   background: #020617;
   padding: 20px;
   margin: 20px auto;
-  width: 250px;
+  width: 260px;
   border-radius: 12px;
 }
 
-/* Admin Form */
 .admin {
   margin: 30px;
 }
@@ -69,11 +68,11 @@ input {
 <button id="loginBtn" onclick="login()">Login with Google</button>
 <button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
 
-<!-- 🔥 Admin Panel -->
+<!-- Admin -->
 <div id="adminPanel" class="admin" style="display:none;">
   <h3>Add Tool</h3>
   <input id="toolName" placeholder="Tool Name"><br>
-  <input id="toolType" placeholder="Type (Dynamo / LISP)"><br>
+  <input id="toolType" placeholder="Type"><br>
   <input id="toolLink" placeholder="Download Link"><br>
   <button onclick="addTool()">Add Tool</button>
 </div>
@@ -83,7 +82,7 @@ input {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, collection, getDocs, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD4qL5kQjBWNZg1JqDvYoRal3d_EODmoA4",
@@ -105,17 +104,9 @@ const userName = document.getElementById("userName");
 const toolsContainer = document.getElementById("toolsContainer");
 const adminPanel = document.getElementById("adminPanel");
 
-// Login
-window.login = async function () {
-  await signInWithPopup(auth, provider);
-};
+window.login = async () => await signInWithPopup(auth, provider);
+window.logout = async () => await signOut(auth);
 
-// Logout
-window.logout = async function () {
-  await signOut(auth);
-};
-
-// Save User
 async function saveUser(user) {
   await setDoc(doc(db, "users", user.uid), {
     name: user.displayName,
@@ -124,57 +115,52 @@ async function saveUser(user) {
   });
 }
 
-// Load Tools
 async function loadTools() {
-  const querySnapshot = await getDocs(collection(db, "tools"));
+  const snapshot = await getDocs(collection(db, "tools"));
   toolsContainer.innerHTML = "";
 
-  querySnapshot.forEach((doc) => {
-    const tool = doc.data();
+  snapshot.forEach((docSnap) => {
+    const tool = docSnap.data();
+    const id = docSnap.id;
 
     const div = document.createElement("div");
     div.className = "card";
+
     div.innerHTML = `
       <h3>${tool.name}</h3>
       <p>${tool.type}</p>
       <a href="${tool.download}" target="_blank">
         <button>Download</button>
       </a>
+      ${adminPanel.style.display === "block" ? `<button onclick="deleteTool('${id}')">Delete</button>` : ""}
     `;
 
     toolsContainer.appendChild(div);
   });
 }
 
-// 🔥 Add Tool
-window.addTool = async function () {
+window.addTool = async () => {
   const name = document.getElementById("toolName").value;
   const type = document.getElementById("toolType").value;
   const link = document.getElementById("toolLink").value;
 
-  if (!name || !type || !link) {
-    alert("Fill all fields");
-    return;
-  }
+  if (!name || !type || !link) return alert("Fill all fields");
 
-  await addDoc(collection(db, "tools"), {
-    name: name,
-    type: type,
-    download: link
-  });
-
-  alert("Tool Added ✅");
+  await addDoc(collection(db, "tools"), { name, type, download: link });
   loadTools();
 };
 
-// Auth State
+window.deleteTool = async (id) => {
+  await deleteDoc(doc(db, "tools", id));
+  loadTools();
+};
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loginBtn.style.display = "none";
     logoutBtn.style.display = "inline";
     userName.innerText = "👤 " + user.displayName;
 
-    // 🔥 خلي الأدمن انت بس
     if (user.email === "ziadanter101@gmail.com") {
       adminPanel.style.display = "block";
     }
