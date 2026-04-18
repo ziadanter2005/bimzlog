@@ -756,9 +756,21 @@ async function loadTools(){
 
 // تحميل + عداد
 window.downloadTool = async (id,link)=>{
+
+  // ❌ لو مش عامل Login
+  if(!auth.currentUser){
+    alert("Please login first 🔒");
+    return;
+  }
+
+  // ✅ زود العداد
   await updateDoc(doc(db,"tools",id),{
     downloads: increment(1)
   });
+
+  // 🚀 تحميل
+  window.open(link,"_blank");
+};
 
   window.open(link,"_blank");
 };
