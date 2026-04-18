@@ -33,6 +33,17 @@ body.light .nav-search{
   background:#ffffff;
   border-color:#e2e8f0;
 }
+ body.light-mode{
+  --bg:#f5f7fb;
+  --bg2:#ffffff;
+  --bg3:#eef2ff;
+  --card:#ffffff;
+  --card2:#f1f5f9;
+  --border:#dbeafe;
+  --t1:#0f172a;
+  --t2:#475569;
+  --t3:#94a3b8;
+}
   <style>
 :root{
   --bg:#05080f;--bg2:#080d18;--bg3:#0c1220;--card:#0e1525;--card2:#121c30;
@@ -876,6 +887,20 @@ function login(){
 function logout(){
   alert("Logout done"); // مؤقت
   updateAuthUI(false);
+}
+function toggleTheme(){
+  document.body.classList.toggle("light-mode");
+
+  // حفظ الوضع
+  if(document.body.classList.contains("light-mode")){
+    localStorage.setItem("theme","light");
+  }else{
+    localStorage.setItem("theme","dark");
+  }
+}
+// Load saved theme
+if(localStorage.getItem("theme") === "light"){
+  document.body.classList.add("light-mode");
 }
 <script>
 </body>
