@@ -6,7 +6,34 @@
 <meta name="description" content="BIMZ — The #1 AI-powered BIM & CAD platform. Free LISP scripts, Dynamo workflows, Revit families, and smart engineering tools."/>
 <title>BIMZ — Smart BIM & CAD Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<style>
+body.light{
+  background:#f8fafc;
+  color:#0f172a;
+}
+
+body.light nav{
+  background:#ffffff;
+  border-bottom:1px solid #e2e8f0;
+}
+
+body.light .tc{
+  background:#ffffff;
+  border-color:#e2e8f0;
+}
+
+body.light .tc-desc{
+  color:#475569;
+}
+
+body.light .nav-links a{
+  color:#334155;
+}
+
+body.light .nav-search{
+  background:#ffffff;
+  border-color:#e2e8f0;
+}
+  <style>
 :root{
   --bg:#05080f;--bg2:#080d18;--bg3:#0c1220;--card:#0e1525;--card2:#121c30;
   --border:#1a2540;--border2:rgba(56,189,248,.22);
@@ -324,6 +351,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-r">
+    <button class="btn-nav" onclick="toggleTheme()">🌙</button>
     <div class="nav-search" onclick="openPal()">
       <span>🔍</span><span>Search...</span><kbd>⌘K</kbd>
     </div>
@@ -806,6 +834,25 @@ onAuthStateChanged(auth, (user) => {
     btn.onclick = login;
   }
 });
+
+</script>
+<script>
+
+// لو المستخدم مختار Light قبل كده
+if(localStorage.getItem("theme") === "light"){
+  document.body.classList.add("light");
+}
+
+// زرار التبديل
+function toggleTheme(){
+  document.body.classList.toggle("light");
+
+  if(document.body.classList.contains("light")){
+    localStorage.setItem("theme","light");
+  }else{
+    localStorage.setItem("theme","dark");
+  }
+}
 
 </script>
 </body>
