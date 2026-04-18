@@ -724,7 +724,7 @@ async function loadTools(){
     const card = document.createElement("div");
     card.className = "tc reveal";
 
-    card.innerHTML = `
+    card.innerHTML = `   <div onclick="openTool('${id}')" style="cursor:pointer">      <div class="tc-top">       <div class="tc-icon">⚡</div>       <div class="tc-badges">         <span class="badge b-free">Free</span>       </div>     </div>      <div class="tc-name">${t.name}</div>     <div class="tc-desc">${t.type}</div>      <div class="tc-meta">       <div class="tc-stars">★★★★★</div>       <div class="tc-dl">↓ ${t.downloads || 0}</div>     </div>    </div>    <button onclick="downloadTool('${id}','${t.download}')"   style="margin-top:10px;background:#38bdf8;border:none;padding:8px 15px;border-radius:6px;cursor:pointer;">   Download   </button> `;
       <div class="tc-top">
         <div class="tc-icon">⚡</div>
         <div class="tc-badges">
@@ -807,6 +807,9 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+function openTool(id){
+  window.location.href = "tool.html?id=" + id;
+}
 </script>
 </body>
 </html>
