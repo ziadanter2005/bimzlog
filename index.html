@@ -463,7 +463,6 @@ body.light-mode{
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-r">
-    <button class="btn-nav" onclick="toggleTheme()">🌙</button>
     <div class="nav-search" onclick="openPal()">
       <span>🔍</span><span>Search...</span><kbd>⌘K</kbd>
     </div>
@@ -954,10 +953,6 @@ if(localStorage.getItem("theme") === "light"){
   document.body.classList.add("light");
 }
 
-// زرار التبديل
-function toggleTheme(){
-  document.body.classList.toggle("light");
-
   if(document.body.classList.contains("light")){
     localStorage.setItem("theme","light");
   }else{
@@ -989,16 +984,6 @@ function logout(){
   alert("Logout done"); // مؤقت
   updateAuthUI(false);
 }
-}
-function toggleTheme(){
-  document.body.classList.toggle("light-mode");
-
-  // حفظ الوضع
-  if(document.body.classList.contains("light-mode")){
-    localStorage.setItem("theme","light");
-  }else{
-    localStorage.setItem("theme","dark");
-  }
 }
 <script>
 </body>
