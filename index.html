@@ -1,162 +1,697 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIMZ</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="BIMZ — The #1 AI-powered BIM & CAD platform. Free LISP scripts, Dynamo workflows, Revit families, and smart engineering tools."/>
+<title>BIMZ — Smart BIM & CAD Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-body{
-  margin:0;
-  font-family:'DM Sans',sans-serif;
-  background:#05080f;
-  color:white;
+:root{
+  --bg:#05080f;--bg2:#080d18;--bg3:#0c1220;--card:#0e1525;--card2:#121c30;
+  --border:#1a2540;--border2:rgba(56,189,248,.22);
+  --teal:#38bdf8;--teal2:#0ea5e9;--red:#f43f5e;--blue:#3b82f6;
+  --green:#10b981;--orange:#f59e0b;--purple:#a855f7;
+  --t1:#eef2ff;--t2:#8899bb;--t3:#3d5080;
+  --mono:'JetBrains Mono',monospace;--sans:'DM Sans',sans-serif;--display:'Syne',sans-serif;
+  --r:14px;--rs:8px;
 }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--teal);}
+
+/* CURSOR */
+#cur,#curR{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;}
+#cur{width:8px;height:8px;background:var(--teal);mix-blend-mode:screen;}
+#curR{width:32px;height:32px;border:1px solid rgba(56,189,248,.4);transition:width .2s,height .2s;}
+
+/* BG */
+#bgCanvas{position:fixed;inset:0;z-index:0;opacity:.55;}
+.grid-bg{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(56,189,248,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.03) 1px,transparent 1px);background-size:50px 50px;}
 
 /* NAV */
-nav{
-  display:flex;
-  justify-content:space-between;
-  padding:15px 30px;
-  background:#020617;
-}
-
-.logo{
-  font-family:'Syne';
-  font-size:22px;
-  color:#38bdf8;
-}
+nav{position:fixed;top:0;width:100%;z-index:500;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(5,8,15,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-box{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#0d1e3a,#0c1525);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;}
+.logo-box svg{width:22px;height:22px;}
+.logo-wm{font-family:var(--display);font-size:1.15rem;font-weight:800;letter-spacing:.02em;color:var(--t1);}
+.logo-wm em{color:var(--teal);font-style:normal;}
+.nav-links{display:flex;gap:1.8rem;list-style:none;}
+.nav-links a{text-decoration:none;color:var(--t2);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--teal);transition:width .3s;}
+.nav-links a:hover{color:var(--t1);}
+.nav-links a:hover::after{width:100%;}
+.nav-r{display:flex;align-items:center;gap:.75rem;}
+.nav-search{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.78rem;color:var(--t3);transition:border-color .2s;}
+.nav-search:hover{border-color:var(--border2);}
+.nav-search kbd{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:.65rem;color:var(--t3);}
+.btn-nav{background:var(--teal);color:#fff;padding:7px 16px;border-radius:7px;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:all .2s;box-shadow:0 0 20px rgba(56,189,248,.2);}
+.btn-nav:hover{background:#7dd3fc;transform:translateY(-1px);}
 
 /* HERO */
-.hero{
-  text-align:center;
-  padding:80px 20px;
-}
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:7rem 2rem 4rem;max-width:1280px;margin:0 auto;gap:4rem;}
+.hero-l{flex:1;}
+.hero-r{flex:1;display:flex;justify-content:center;align-items:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.2);border-radius:100px;padding:5px 14px;margin-bottom:1.75rem;font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);animation:fadeUp .5s ease both;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s ease infinite;}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 6px var(--green);}50%{opacity:.3;box-shadow:none;}}
+.hero h1{font-family:var(--display);font-size:clamp(3rem,7vw,6.5rem);font-weight:800;line-height:.95;margin-bottom:1.5rem;animation:fadeUp .5s .08s ease both;}
+.h1-dim{color:var(--t2);display:block;font-size:.6em;}
+.h1-main{display:block;background:linear-gradient(120deg,var(--teal),#818cf8,var(--teal));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shim 4s linear infinite;}
+@keyframes shim{0%{background-position:0% center;}100%{background-position:200% center;}}
+.hero-desc{font-size:1rem;color:var(--t2);line-height:1.75;max-width:480px;margin-bottom:2rem;animation:fadeUp .5s .16s ease both;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeUp .5s .24s ease both;}
+.btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;padding:13px 26px;border-radius:9px;font-weight:700;font-size:.82rem;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;transition:all .25s;box-shadow:0 0 32px rgba(56,189,248,.3);}
+.btn-p:hover{background:#7dd3fc;transform:translateY(-2px);box-shadow:0 0 50px rgba(56,189,248,.5);}
+.btn-o{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--t1);padding:13px 26px;border-radius:9px;border:1px solid var(--border);font-weight:600;font-size:.82rem;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;transition:all .25s;}
+.btn-o:hover{border-color:var(--border2);color:var(--teal);background:rgba(56,189,248,.04);}
+.hero-stats{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);animation:fadeUp .5s .32s ease both;}
+.sn{font-family:var(--display);font-size:2rem;font-weight:800;color:var(--t1);line-height:1;}
+.sn span{color:var(--teal);}
+.sl2{font-size:.68rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
 
-.hero h1{
-  font-size:50px;
-}
+/* HERO 3D CARD */
+.bimz-vis{width:320px;height:380px;position:relative;animation:fadeUp .7s .4s ease both;}
+.card3d{width:100%;height:100%;background:linear-gradient(140deg,#0e1e38,#091220);border:1px solid var(--border2);border-radius:20px;padding:1.75rem;position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 60px rgba(56,189,248,.07);transform:perspective(1000px) rotateY(-8deg) rotateX(4deg);transition:transform .5s ease;}
+.card3d:hover{transform:perspective(1000px) rotateY(-2deg) rotateX(1deg);}
+.card3d::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);}
+.bc-lbl{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem;}
+.bc-big{font-family:var(--display);font-size:3.5rem;font-weight:800;background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:.4rem;}
+.bc-sub{font-size:.78rem;color:var(--t2);margin-bottom:1.75rem;}
+.bc-tools{display:flex;flex-direction:column;gap:.5rem;}
+.bct{display:flex;align-items:center;gap:.65rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:7px;padding:.55rem .85rem;font-size:.75rem;font-weight:500;transition:all .2s;cursor:default;}
+.bct:hover{border-color:var(--border2);background:rgba(56,189,248,.04);}
+.bd{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.bb{margin-left:auto;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase;}
+.bb-f{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.bb-n{background:rgba(56,189,248,.1);color:var(--teal);border:1px solid rgba(56,189,248,.2);}
+.bb-a{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.2);}
 
-.hero span{
-  color:#38bdf8;
-}
+/* SECTION WRAPPER */
+.sw{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:5rem 2rem;}
+.section-hr{border:none;height:1px;background:var(--border);max-width:1280px;margin:0 auto;position:relative;z-index:1;}
+.sl{display:flex;align-items:center;gap:10px;margin-bottom:.6rem;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);}
+.sl::before{content:'';width:20px;height:1px;background:var(--teal);}
+.sh{font-family:var(--display);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;line-height:1.05;margin-bottom:.75rem;}
+.sd{color:var(--t2);font-size:.95rem;line-height:1.7;max-width:460px;margin-bottom:2.5rem;}
 
-/* TOOLS */
-.section{
-  padding:40px;
-}
+/* SEARCH + FILTERS */
+.search-wrap{display:flex;align-items:center;gap:.75rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.75rem 1.25rem;max-width:600px;margin-bottom:1.25rem;transition:border-color .2s;}
+.search-wrap:focus-within{border-color:var(--border2);box-shadow:0 0 0 3px rgba(56,189,248,.07);}
+.search-wrap input{flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:var(--sans);font-size:.9rem;}
+.search-wrap input::placeholder{color:var(--t3);}
+.ftags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.ftag{background:var(--card);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);cursor:pointer;transition:all .2s;}
+.ftag:hover,.ftag.on{background:rgba(56,189,248,.1);border-color:var(--border2);color:var(--teal);}
 
-.tg{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-}
+/* TOOLS GRID */
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem;}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;position:relative;overflow:hidden;text-decoration:none;color:inherit;transition:all .3s cubic-bezier(.34,1.56,.64,1);display:block;cursor:pointer;}
+.tc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(56,189,248,.06),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;}
+.tc:hover::after{opacity:1;}
+.tc:hover{background:var(--card2);border-color:var(--border2);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.4);}
+.tc.sp2{grid-column:span 2;}
+.tc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;}
+.tc-icon{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+.tc-badges{display:flex;gap:.4rem;flex-wrap:wrap;}
+.badge{font-size:.58rem;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.08em;text-transform:uppercase;}
+.b-hot{background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.2);}
+.b-new{background:rgba(56,189,248,.1);color:var(--teal);border:1px solid rgba(56,189,248,.2);}
+.b-free{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.b-ai{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.2);}
+.tc-name{font-family:var(--display);font-size:1rem;font-weight:700;margin-bottom:.4rem;}
+.tc-desc{font-size:.8rem;color:var(--t2);line-height:1.6;margin-bottom:1rem;}
+.tc-meta{display:flex;align-items:center;justify-content:space-between;}
+.tc-stars{display:flex;align-items:center;gap:4px;font-size:.75rem;color:var(--orange);}
+.tc-dl{font-size:.7rem;color:var(--t3);}
+.tc-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),var(--blue));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.tc:hover .tc-bar{transform:scaleX(1);}
+.tc-code{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-top:1rem;font-family:var(--mono);font-size:.7rem;color:var(--teal);line-height:1.8;overflow:hidden;}
+.cc{color:var(--t3);}.cf{color:#c084fc;}.cs{color:#86efac;}.ck{color:var(--teal);}
 
-/* CARD */
-.tc{
-  background:#0e1525;
-  border:1px solid #1a2540;
-  padding:20px;
-  border-radius:12px;
-  transition:0.3s;
-}
+/* COMPARE TABLE */
+.cmp-tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
+.cmp-tbl th{background:var(--card2);padding:1rem;text-align:left;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);border-bottom:2px solid var(--border);}
+.cmp-tbl th.ct{color:var(--teal);}
+.cmp-tbl th.cb{color:var(--blue);}
+.cmp-tbl td{padding:.85rem 1rem;border-bottom:1px solid var(--border);color:var(--t2);vertical-align:top;}
+.cmp-tbl td:first-child{color:var(--t1);font-weight:500;}
+.cmp-tbl tr:hover td{background:rgba(255,255,255,.015);}
+.c-y{color:var(--green);}.c-n{color:var(--t3);}.c-p{color:var(--orange);}
 
-.tc:hover{
-  transform:translateY(-5px);
-  border-color:#38bdf8;
-}
+/* AI SECTION */
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.ai-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;position:relative;overflow:hidden;transition:all .3s;}
+.ai-card:hover{border-color:var(--border2);background:var(--card2);transform:translateY(-3px);}
+.ai-card.w2{grid-column:span 2;}
+.ai-card::before{content:'';position:absolute;top:-50px;right:-50px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.07),transparent 70%);}
+.ai-icon{font-size:1.8rem;margin-bottom:.9rem;}
+.ai-title{font-family:var(--display);font-size:1.05rem;font-weight:700;margin-bottom:.4rem;}
+.ai-desc{font-size:.8rem;color:var(--t2);line-height:1.6;margin-bottom:1.1rem;}
+.bot-chat{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.cm{display:flex;gap:.6rem;align-items:flex-start;}
+.cm.right{flex-direction:row-reverse;}
+.cav{width:26px;height:26px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
+.cav.bot{background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.3);}
+.cav.user{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.25);}
+.cb2{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:.55rem .85rem;font-size:.77rem;color:var(--t1);line-height:1.6;max-width:85%;}
+.cb2.bot{border-color:rgba(168,85,247,.2);}
+.cb2.user{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.2);}
+.chat-inp{display:flex;gap:.5rem;margin-top:.25rem;}
+.chat-inp input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.5rem .85rem;color:var(--t1);font-family:var(--sans);font-size:.77rem;outline:none;}
+.chat-inp button{background:var(--teal);color:#fff;border:none;border-radius:7px;padding:.5rem .9rem;font-size:.77rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.chat-inp button:hover{background:#7dd3fc;}
 
-.tc-name{
-  font-size:18px;
-  font-weight:bold;
-}
+/* LEARNING */
+.lg{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.lc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all .3s;text-decoration:none;color:inherit;}
+.lc:hover{border-color:var(--border2);transform:translateY(-3px);}
+.lc-thumb{height:110px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;}
+.lc-body{padding:1.25rem;}
+.lc-lvl{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem;}
+.beg{color:var(--green);}.mid{color:var(--orange);}.adv{color:var(--red);}
+.lc-title{font-family:var(--display);font-size:.92rem;font-weight:700;margin-bottom:.4rem;}
+.lc-desc{font-size:.77rem;color:var(--t2);line-height:1.6;margin-bottom:.9rem;}
+.lc-foot{font-size:.68rem;color:var(--t3);}
+.lc-prog{height:3px;background:var(--border);border-radius:2px;margin-top:.6rem;}
+.lc-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--teal),var(--blue));}
 
-.tc-desc{
-  color:#8899bb;
-  margin-top:5px;
-}
+/* ROADMAP */
+.rm{position:relative;padding-left:50px;}
+.rm-line{position:absolute;left:16px;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,var(--teal),transparent);}
+.rm-items{display:flex;flex-direction:column;gap:2rem;}
+.rm-item{position:relative;}
+.rm-dot{position:absolute;left:-42px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--border);}
+.rm-dot.done{background:var(--teal);border-color:var(--teal);}
+.rm-dot.now{background:var(--teal);border-color:var(--teal);box-shadow:0 0 14px rgba(56,189,248,.7);animation:glp 2s ease infinite;}
+@keyframes glp{0%,100%{box-shadow:0 0 14px rgba(56,189,248,.7);}50%{box-shadow:0 0 4px rgba(56,189,248,.2);}}
+.rm-phase{font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);margin-bottom:3px;}
+.rm-title{font-family:var(--display);font-size:1.15rem;font-weight:700;text-transform:uppercase;margin-bottom:3px;}
+.rm-desc{font-size:.8rem;color:var(--t2);line-height:1.6;margin-bottom:.5rem;}
+.rb{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 10px;border-radius:4px;letter-spacing:.08em;text-transform:uppercase;}
+.rb-done{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.25);}
+.rb-now{background:rgba(56,189,248,.1);color:var(--teal);border:1px solid rgba(56,189,248,.25);}
+.rb-soon{background:rgba(245,158,11,.1);color:var(--orange);border:1px solid rgba(245,158,11,.25);}
+.rb-plan{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.25);}
 
-.tc-meta{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
-}
+/* CONTACT */
+.cg{display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;align-items:start;}
+.c-info{display:flex;flex-direction:column;gap:.75rem;}
+.ci{display:flex;align-items:center;gap:1rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.9rem 1.2rem;text-decoration:none;color:inherit;transition:all .2s;}
+.ci:hover{border-color:var(--border2);}
+.ci-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);}
+.ci-l{font-size:.62rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;}
+.ci-v{font-size:.87rem;font-weight:600;margin-top:2px;}
+.c-form{display:flex;flex-direction:column;gap:.9rem;}
+label.fl{display:block;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:5px;}
+.fi{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 15px;color:var(--t1);font-family:var(--sans);font-size:.88rem;outline:none;transition:border-color .2s;}
+.fi:focus{border-color:var(--border2);box-shadow:0 0 0 3px rgba(56,189,248,.07);}
+textarea.fi{min-height:110px;resize:none;}
+select.fi{cursor:pointer;}
+.btn-send{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:13px 28px;font-family:var(--display);font-size:.82rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:all .25s;box-shadow:0 0 25px rgba(56,189,248,.25);}
+.btn-send:hover{background:#7dd3fc;transform:translateY(-2px);box-shadow:0 0 40px rgba(56,189,248,.45);}
 
-.btn-download{
-  margin-top:15px;
-  width:100%;
-  padding:10px;
-  background:#38bdf8;
-  border:none;
-  border-radius:8px;
-  color:white;
-  cursor:pointer;
-}
+/* TOAST */
+#toast{position:fixed;bottom:2rem;right:2rem;z-index:900;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.9rem 1.2rem;display:flex;align-items:center;gap:.7rem;font-size:.82rem;box-shadow:0 20px 50px rgba(0,0,0,.5);transform:translateY(120%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+#toast.show{transform:none;}
 
-.btn-download:hover{
-  background:#0ea5e9;
+/* COMMAND PALETTE */
+#cmd{position:fixed;inset:0;z-index:800;background:rgba(5,8,15,.85);backdrop-filter:blur(16px);display:none;align-items:flex-start;justify-content:center;padding-top:14vh;}
+#cmd.open{display:flex;}
+.cmd-box{width:100%;max-width:580px;background:var(--card2);border:1px solid var(--border2);border-radius:14px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7);}
+.cmd-iw{display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border);}
+.cmd-i{flex:1;background:none;border:none;outline:none;color:var(--t1);font-size:1rem;font-family:var(--sans);}
+.cmd-i::placeholder{color:var(--t3);}
+.cmd-res{max-height:300px;overflow-y:auto;}
+.cmd-item{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.2rem;cursor:pointer;transition:background .15s;font-size:.85rem;}
+.cmd-item:hover{background:rgba(56,189,248,.05);}
+.cmd-ico{width:30px;height:30px;border-radius:7px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.cmd-cat{font-size:.68rem;color:var(--t3);margin-left:auto;}
+.cmd-hint{padding:.7rem 1.2rem;border-top:1px solid var(--border);font-size:.67rem;color:var(--t3);display:flex;gap:1rem;}
+.cmd-hint kbd{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:.63rem;}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:1280px;margin:0 auto;padding:3rem 2rem 2rem;}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+.foot-brand .logo-wm{font-size:1.3rem;margin-bottom:.75rem;display:block;}
+.foot-desc{font-size:.8rem;color:var(--t2);line-height:1.7;max-width:260px;}
+.fh{font-size:.67rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem;}
+.flinks{display:flex;flex-direction:column;gap:.4rem;}
+.flinks a{font-size:.82rem;color:var(--t2);text-decoration:none;transition:color .2s;}
+.flinks a:hover{color:var(--teal);}
+.fb{display:flex;align-items:center;justify-content:space-between;padding-top:1.5rem;border-top:1px solid var(--border);}
+.fc{font-size:.73rem;color:var(--t3);}
+.fl2{display:flex;gap:1.5rem;}
+.fl2 a{font-size:.72rem;color:var(--t3);text-decoration:none;}
+.fl2 a:hover{color:var(--teal);}
+
+/* REVEAL ANIMATION */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:none;}
+.rd1{transition-delay:.08s;}.rd2{transition-delay:.16s;}.rd3{transition-delay:.24s;}.rd4{transition-delay:.32s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero{flex-direction:column;gap:3rem;text-align:center;}
+  .hero-actions{justify-content:center;}
+  .hero-stats{flex-wrap:wrap;justify-content:center;}
+  .ai-grid{grid-template-columns:1fr;}
+  .ai-card.w2{grid-column:span 1;}
+  .lg{grid-template-columns:1fr 1fr;}
+  .cg{grid-template-columns:1fr;}
+  .fg{grid-template-columns:1fr 1fr;}
+  .nav-links{display:none;}
+}
+@media(max-width:600px){
+  .tg{grid-template-columns:1fr;}
+  .tc.sp2{grid-column:span 1;}
+  .lg{grid-template-columns:1fr;}
+  .fg{grid-template-columns:1fr;}
+  .fb{flex-direction:column;gap:.75rem;text-align:center;}
+  .bimz-vis{display:none;}
 }
 </style>
 </head>
-
 <body>
 
+<div id="cur"></div>
+<div id="curR"></div>
+<canvas id="bgCanvas"></canvas>
+<div class="grid-bg"></div>
+
+<!-- COMMAND PALETTE -->
+<div id="cmd">
+  <div class="cmd-box">
+    <div class="cmd-iw">
+      <span style="color:var(--t3)">⌘</span>
+      <input class="cmd-i" id="cmdIn" placeholder="Search tools, AI, courses..." autocomplete="off"/>
+      <span style="color:var(--t3);font-size:.75rem;cursor:pointer;" onclick="closePal()">ESC</span>
+    </div>
+    <div class="cmd-res">
+      <div class="cmd-item" onclick="navTo('#tools')"><div class="cmd-ico">⚡</div>LISP Scripts<span class="cmd-cat">Tools</span></div>
+      <div class="cmd-item" onclick="navTo('#tools')"><div class="cmd-ico">🔷</div>Dynamo Scripts<span class="cmd-cat">Tools</span></div>
+      <div class="cmd-item" onclick="navTo('#tools')"><div class="cmd-ico">🏠</div>Revit Families<span class="cmd-cat">Tools</span></div>
+      <div class="cmd-item" onclick="navTo('#ai')"><div class="cmd-ico">🤖</div>BIMZ Bot — AI<span class="cmd-cat">AI</span></div>
+      <div class="cmd-item" onclick="navTo('#learning')"><div class="cmd-ico">🎓</div>Learning Center<span class="cmd-cat">Learn</span></div>
+      <div class="cmd-item" onclick="navTo('#roadmap')"><div class="cmd-ico">🗺️</div>Roadmap<span class="cmd-cat">Info</span></div>
+      <div class="cmd-item" onclick="navTo('#contact')"><div class="cmd-ico">✉️</div>Contact<span class="cmd-cat">Info</span></div>
+    </div>
+    <div class="cmd-hint"><span><kbd>↵</kbd> select</span><span><kbd>↑↓</kbd> navigate</span><span><kbd>esc</kbd> close</span></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><span id="toastMsg">Done!</span></div>
+
+<!-- NAV -->
 <nav>
-  <div class="logo">BIMZ</div>
+  <a href="#" class="nav-logo">
+    <div class="logo-box">
+      <svg viewBox="0 0 26 26" fill="none"><path d="M4 4h18L8 22h14" stroke="url(#ng)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="ng" x1="4" y1="4" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#f43f5e"/></linearGradient></defs></svg>
+    </div>
+    <div class="logo-wm"><em>BIM</em>Z</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#ai">AI</a></li>
+    <li><a href="#learning">Learn</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-r">
+    <div class="nav-search" onclick="openPal()">
+      <span>🔍</span><span>Search...</span><kbd>⌘K</kbd>
+    </div>
+    <a href="#contact" class="btn-nav">Get Started</a>
+  </div>
 </nav>
 
+<!-- ══════ HERO ══════ -->
+<div style="position:relative;z-index:1;max-width:1280px;margin:0 auto;">
 <div class="hero">
-  <h1>Welcome to <span>BIMZ</span></h1>
-  <p>Smart BIM & CAD Platform</p>
+  <div class="hero-l">
+    <div class="eyebrow"><div class="live-dot"></div>AI-Powered BIM Platform · Free Forever</div>
+    <h1><span class="h1-dim">Welcome to</span><span class="h1-main">BIMZ</span></h1>
+    <p class="hero-desc">The #1 smart platform for BIM & CAD engineers. Free LISP scripts, Dynamo workflows, Revit families, AI assistant, and structured learning — all in one place.</p>
+    <div class="hero-actions">
+      <a href="#tools" class="btn-p">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Explore Tools
+      </a>
+      <a href="#ai" class="btn-o">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        BIMZ Bot
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="sn">80<span>+</span></div><div class="sl2">Tools</div></div>
+      <div><div class="sn">12<span>k</span></div><div class="sl2">Downloads</div></div>
+      <div><div class="sn">100<span>%</span></div><div class="sl2">Free</div></div>
+    </div>
+  </div>
+  <div class="hero-r">
+    <div class="bimz-vis">
+      <div class="card3d">
+        <div class="bc-lbl">Platform Overview</div>
+        <div class="bc-big">BIMZ</div>
+        <div class="bc-sub">Smart BIM & CAD Ecosystem</div>
+        <div class="bc-tools">
+          <div class="bct"><span class="bd" style="background:#38bdf8"></span>LISP Scripts<span class="bb bb-f">50+ FREE</span></div>
+          <div class="bct"><span class="bd" style="background:#3b82f6"></span>Dynamo Nodes<span class="bb bb-f">30+ FREE</span></div>
+          <div class="bct"><span class="bd" style="background:#10b981"></span>Revit Families<span class="bb bb-n">NEW</span></div>
+          <div class="bct"><span class="bd" style="background:#a855f7"></span>BIMZ Bot AI<span class="bb bb-a">AI</span></div>
+          <div class="bct"><span class="bd" style="background:#f59e0b"></span>Fonts + Styles<span class="bb bb-f">PACK</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
-<div class="section">
-  <h2>Tools</h2>
+<hr class="section-hr"/>
 
-  <div class="tg" id="toolsContainer">
+<!-- ══════ TOOLS ══════ -->
+<div class="sw" id="tools">
+  <div class="sl reveal">Tools Library</div>
+  <h2 class="sh reveal rd1">Professional BIM &<br/>CAD Tools</h2>
+  <p class="sd reveal rd2">Download tested scripts, nodes, and resources. Rated and reviewed by real engineers.</p>
 
-    <!-- TOOL -->
-    <div class="tc">
-      <div class="tc-name">Dynamo Auto Tag</div>
-      <div class="tc-desc">Dynamo Script</div>
-
-      <div class="tc-meta">
-        <div>⭐ 5.0</div>
-        <div>↓ 2</div>
-      </div>
-
-      <button class="btn-download">Download</button>
-    </div>
-
-    <div class="tc">
-      <div class="tc-name">LISP Find Replace</div>
-      <div class="tc-desc">AutoCAD LISP</div>
-
-      <div class="tc-meta">
-        <div>⭐ 4.8</div>
-        <div>↓ 5</div>
-      </div>
-
-      <button class="btn-download">Download</button>
-    </div>
-
-    <div class="tc">
-      <div class="tc-name">Revit Family Pack</div>
-      <div class="tc-desc">Revit Families</div>
-
-      <div class="tc-meta">
-        <div>⭐ 4.9</div>
-        <div>↓ 10</div>
-      </div>
-
-      <button class="btn-download">Download</button>
-    </div>
-
+  <div class="search-wrap reveal rd2">
+    <span style="color:var(--t3)">🔍</span>
+    <input type="text" placeholder="Search tools, scripts, families..." id="toolSearch"/>
+  </div>
+  <div class="ftags reveal rd3">
+    <div class="ftag on" onclick="ft(this,'all')">All</div>
+    <div class="ftag" onclick="ft(this,'autocad')">AutoCAD</div>
+    <div class="ftag" onclick="ft(this,'revit')">Revit</div>
+    <div class="ftag" onclick="ft(this,'dynamo')">Dynamo</div>
+    <div class="ftag" onclick="ft(this,'mep')">MEP</div>
+    <div class="ftag" onclick="ft(this,'arch')">Architecture</div>
+    <div class="ftag" onclick="ft(this,'ai')">AI Tools</div>
   </div>
 
+  <div class="tg">
+    <!-- FEATURED -->
+    <div class="tc sp2 reveal" data-cat="autocad mep">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;">
+        <div>
+          <div class="tc-top">
+            <div class="tc-icon" style="background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);">⚡</div>
+            <div class="tc-badges"><span class="badge b-hot">🔥 Popular</span><span class="badge b-free">Free</span></div>
+          </div>
+          <div class="tc-name">AutoCAD LISP Tools</div>
+          <div class="tc-desc">50+ battle-tested routines — layer management, block insertion, dimension tools, MEP annotations, and full automation scripts for production drawings.</div>
+          <div class="tc-meta">
+            <div class="tc-stars">★★★★★ <span style="color:var(--t3);margin-left:4px;">4.9 (312)</span></div>
+            <div class="tc-dl">↓ 8.2k</div>
+          </div>
+          <div style="margin-top:1rem;display:flex;gap:.5rem;">
+            <button onclick="showToast('⬇️ Downloading LISP Pack...')" style="background:var(--teal);color:#fff;border:none;border-radius:7px;padding:8px 16px;font-size:.74rem;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">Download All ↓</button>
+            <button onclick="showToast('⭐ Added to Favorites!')" style="background:var(--card2);color:var(--t2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:.74rem;cursor:pointer;">♡ Save</button>
+          </div>
+        </div>
+        <div class="tc-code">
+          <span class="cc">;; BIMZ — MEP Layer Setup</span><br/>
+          (<span class="cf">defun</span> <span class="ck">c:BZ-Layer</span> ()<br/>
+          &nbsp;(<span class="cf">command</span> <span class="cs">"LAYER"</span><br/>
+          &nbsp;&nbsp;<span class="cs">"M"</span> <span class="cs">"MEP-HVAC"</span><br/>
+          &nbsp;&nbsp;<span class="cs">"C"</span> <span class="cs">"5"</span> <span class="cs">""</span><br/>
+          &nbsp;&nbsp;<span class="cs">"LW"</span> <span class="cs">"0.35"</span> <span class="cs">""</span><br/>
+          &nbsp;&nbsp;<span class="cs">""</span>)<br/>
+          )
+        </div>
+      </div>
+      <div class="tc-bar"></div>
+    </div>
+
+    <div class="tc reveal" data-cat="revit dynamo mep">
+      <div class="tc-top"><div class="tc-icon" style="background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);">🔷</div><div class="tc-badges"><span class="badge b-new">New</span><span class="badge b-free">Free</span></div></div>
+      <div class="tc-name">Dynamo Scripts</div>
+      <div class="tc-desc">Visual programming for Revit — automate families, parameters, MEP schedules, and clash workflows.</div>
+      <div class="tc-meta"><div class="tc-stars">★★★★½ <span style="color:var(--t3);margin-left:4px;">4.7</span></div><div class="tc-dl">↓ 4.1k</div></div>
+      <div class="tc-bar"></div>
+    </div>
+
+    <div class="tc reveal rd1" data-cat="revit mep">
+      <div class="tc-top"><div class="tc-icon" style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);">🏠</div><div class="tc-badges"><span class="badge b-free">Free</span></div></div>
+      <div class="tc-name">Revit Families</div>
+      <div class="tc-desc">Parametric MEP families — HVAC diffusers, pipe fittings, valve schedules, pumps, and equipment.</div>
+      <div class="tc-meta"><div class="tc-stars">★★★★★ <span style="color:var(--t3);margin-left:4px;">4.8</span></div><div class="tc-dl">↓ 3.3k</div></div>
+      <div class="tc-bar"></div>
+    </div>
+
+    <div class="tc reveal rd2" data-cat="autocad">
+      <div class="tc-top"><div class="tc-icon" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);">🔤</div><div class="tc-badges"><span class="badge b-free">Free</span></div></div>
+      <div class="tc-name">AutoCAD Fonts</div>
+      <div class="tc-desc">Complete SHX + TTF font pack for engineering drawings. All standard fonts in one download.</div>
+      <div class="tc-meta"><div class="tc-stars">★★★★ <span style="color:var(--t3);margin-left:4px;">4.5</span></div><div class="tc-dl">↓ 6.8k</div></div>
+      <div class="tc-bar"></div>
+    </div>
+
+    <div class="tc reveal rd3" data-cat="autocad">
+      <div class="tc-top"><div class="tc-icon" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);">🎨</div><div class="tc-badges"><span class="badge b-free">Free</span></div></div>
+      <div class="tc-name">Plot Styles</div>
+      <div class="tc-desc">Professional CTB and STB files. Standardized line weights and colors for engineering output.</div>
+      <div class="tc-meta"><div class="tc-stars">★★★★½ <span style="color:var(--t3);margin-left:4px;">4.6</span></div><div class="tc-dl">↓ 5.1k</div></div>
+      <div class="tc-bar"></div>
+    </div>
+
+    <div class="tc reveal rd4" data-cat="revit ai">
+      <div class="tc-top"><div class="tc-icon" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);">🌿</div><div class="tc-badges"><span class="badge b-new">New</span><span class="badge b-ai">AI</span></div></div>
+      <div class="tc-name">Enscape Tools</div>
+      <div class="tc-desc">Render presets, material packs, and AI-enhanced settings for MEP and architectural visualization.</div>
+      <div class="tc-meta"><div class="tc-stars">★★★★ <span style="color:var(--t3);margin-left:4px;">4.4</span></div><div class="tc-dl">↓ 2.7k</div></div>
+      <div class="tc-bar"></div>
+    </div>
+  </div>
 </div>
 
+<hr class="section-hr"/>
+
+<!-- ══════ COMPARE ══════ -->
+<div class="sw">
+  <div class="sl reveal">Decision Guide</div>
+  <h2 class="sh reveal rd1">LISP vs Dynamo —<br/>When to Use What</h2>
+  <p class="sd reveal rd2">Side-by-side comparison based on real project scenarios.</p>
+  <div style="overflow-x:auto;" class="reveal rd3">
+    <table class="cmp-tbl">
+      <thead><tr><th>Criteria</th><th class="ct">⚡ AutoCAD LISP</th><th class="cb">🔷 Dynamo</th></tr></thead>
+      <tbody>
+        <tr><td>Software</td><td>AutoCAD</td><td>Revit / AutoCAD</td></tr>
+        <tr><td>Learning Curve</td><td>Medium</td><td>Low (Visual)</td></tr>
+        <tr><td>BIM Integration</td><td class="c-n">✗ None</td><td class="c-y">✓ Full</td></tr>
+        <tr><td>2D Drawing Automation</td><td class="c-y">✓ Excellent</td><td class="c-p">◐ Limited</td></tr>
+        <tr><td>Parameter Control</td><td class="c-p">◐ Basic</td><td class="c-y">✓ Full</td></tr>
+        <tr><td>MEP Scheduling</td><td class="c-n">✗ Manual</td><td class="c-y">✓ Automated</td></tr>
+        <tr><td>Execution Speed</td><td class="c-y">✓ Very Fast</td><td class="c-p">◐ Medium</td></tr>
+        <tr><td>Clash Detection</td><td class="c-n">✗ No</td><td class="c-y">✓ Yes</td></tr>
+        <tr><td>Shop Drawings</td><td class="c-y">✓ Best</td><td class="c-p">◐ Possible</td></tr>
+        <tr><td>Best For</td><td>AutoCAD-heavy workflows</td><td>BIM-first projects</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="section-hr"/>
+
+<!-- ══════ AI ══════ -->
+<div class="sw" id="ai">
+  <div class="sl reveal">Smart Features</div>
+  <h2 class="sh reveal rd1">AI & Smart<br/>Engineering Tools</h2>
+  <p class="sd reveal rd2">Powered by large language models trained on BIM, LISP, and Dynamo workflows.</p>
+  <div class="ai-grid">
+    <!-- BOT WIDE -->
+    <div class="ai-card w2 reveal">
+      <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:2rem;align-items:start;">
+        <div>
+          <div class="ai-icon">🤖</div>
+          <div class="ai-title">BIMZ Bot — AI Assistant</div>
+          <div class="ai-desc">Ask anything about AutoCAD LISP syntax, Revit parameters, Dynamo nodes, MEP system design, or clash resolution. Engineer-grade answers in seconds.</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+            <span class="badge b-ai">LISP Help</span>
+            <span class="badge b-new">Dynamo Debug</span>
+            <span class="badge b-free">MEP Q&A</span>
+          </div>
+        </div>
+        <div class="bot-chat">
+          <div class="cm">
+            <div class="cav user">👤</div>
+            <div class="cb2 user">How do I rotate all text to match UCS in LISP?</div>
+          </div>
+          <div class="cm">
+            <div class="cav bot">⚡</div>
+            <div class="cb2 bot">Use <code style="color:var(--teal);background:rgba(56,189,248,.08);padding:1px 5px;border-radius:3px;">(entmod)</code> with group code <strong>50</strong> for angle. Loop through all TEXT with <code style="color:var(--teal);background:rgba(56,189,248,.08);padding:1px 5px;border-radius:3px;">(ssget "X" '((0 . "TEXT")))</code> and set angle to 0 relative to current UCS...</div>
+          </div>
+          <div class="chat-inp">
+            <input placeholder="Ask BIMZ Bot..." id="botIn"/>
+            <button onclick="sendBot()">Send →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ai-card reveal"><div class="ai-icon">⚡</div><div class="ai-title">LISP Generator</div><div class="ai-desc">Describe what you need in plain English — BIMZ generates ready-to-use LISP code with comments and error handling.</div><span class="badge b-ai">Coming Soon</span></div>
+    <div class="ai-card reveal rd1"><div class="ai-icon">🔷</div><div class="ai-title">Dynamo Optimizer</div><div class="ai-desc">Paste your Dynamo script — AI analyzes it, finds bottlenecks, and suggests optimized node sequences.</div><span class="badge b-ai">Coming Soon</span></div>
+    <div class="ai-card reveal rd2"><div class="ai-icon">🔍</div><div class="ai-title">Problem → Solution Engine</div><div class="ai-desc">Describe your site issue or clash. The engine matches it against known solutions and generates a structured resolution report.</div><span class="badge b-ai">Coming Soon</span></div>
+    <div class="ai-card reveal rd3"><div class="ai-icon">📁</div><div class="ai-title">File Analyzer</div><div class="ai-desc">Upload CAD or Revit files — AI checks for standard compliance, naming issues, missing parameters, and coordination problems.</div><span class="badge b-ai">Coming Soon</span></div>
+  </div>
+</div>
+
+<hr class="section-hr"/>
+
+<!-- ══════ LEARNING ══════ -->
+<div class="sw" id="learning">
+  <div class="sl reveal">Learning Center</div>
+  <h2 class="sh reveal rd1">Courses &<br/>Learning Paths</h2>
+  <p class="sd reveal rd2">Structured content for every level — beginner to advanced BIM automation.</p>
+  <div class="lg">
+    <a href="#" class="lc reveal"><div class="lc-thumb" style="background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(59,130,246,.04));">⚡</div><div class="lc-body"><div class="lc-lvl beg">Beginner</div><div class="lc-title">LISP Scripting Fundamentals</div><div class="lc-desc">Start from zero — syntax, basic commands, and your first AutoCAD automation routine.</div><div class="lc-foot">12 lessons · 3.5 hrs</div><div class="lc-prog"><div class="lc-bar" style="width:0%"></div></div></div></a>
+    <a href="#" class="lc reveal rd1"><div class="lc-thumb" style="background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(168,85,247,.04));">🔷</div><div class="lc-body"><div class="lc-lvl mid">Intermediate</div><div class="lc-title">Dynamo for MEP Engineers</div><div class="lc-desc">Practical Dynamo workflows — HVAC duct routing, piping, equipment scheduling.</div><div class="lc-foot">18 lessons · 5 hrs</div><div class="lc-prog"><div class="lc-bar" style="width:0%"></div></div></div></a>
+    <a href="#" class="lc reveal rd2"><div class="lc-thumb" style="background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(244,63,94,.04));">🏗️</div><div class="lc-body"><div class="lc-lvl adv">Advanced</div><div class="lc-title">Revit BIM Coordination</div><div class="lc-desc">Shop drawings, clash detection, and multi-discipline coordination using Navisworks + Revit.</div><div class="lc-foot">22 lessons · 7 hrs</div><div class="lc-prog"><div class="lc-bar" style="width:0%"></div></div></div></a>
+    <a href="#" class="lc reveal rd3"><div class="lc-thumb" style="background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(56,189,248,.04));">🌿</div><div class="lc-body"><div class="lc-lvl beg">Beginner</div><div class="lc-title">Enscape Quick Start</div><div class="lc-desc">Render settings, lighting, materials — professional renders from Revit in under an hour.</div><div class="lc-foot">8 lessons · 2 hrs</div><div class="lc-prog"><div class="lc-bar" style="width:0%"></div></div></div></a>
+    <a href="#" class="lc reveal rd4"><div class="lc-thumb" style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(244,63,94,.04));">📋</div><div class="lc-body"><div class="lc-lvl mid">Intermediate</div><div class="lc-title">Drawing Standards & QA</div><div class="lc-desc">Layer naming, annotation styles, and QA checklist for professional engineering drawings.</div><div class="lc-foot">10 lessons · 2.5 hrs</div><div class="lc-prog"><div class="lc-bar" style="width:0%"></div></div></div></a>
+    <a href="#" class="lc reveal"><div class="lc-thumb" style="background:linear-gradient(135deg,rgba(244,63,94,.08),rgba(168,85,247,.04));">🤖</div><div class="lc-body"><div class="lc-lvl adv">Advanced</div><div class="lc-title">AI Tools for Engineers</div><div class="lc-desc">Use AI assistants, LISP generators, and Dynamo optimizers to 10x your productivity.</div><div class="lc-foot">15 lessons · 4 hrs</div><div class="lc-prog"><div class="lc-bar" style="width:0%"></div></div></div></a>
+  </div>
+</div>
+
+<hr class="section-hr"/>
+
+<!-- ══════ ROADMAP ══════ -->
+<div class="sw" id="roadmap">
+  <div class="sl reveal">Development Plan</div>
+  <h2 class="sh reveal rd1">BIMZ Platform<br/>Roadmap</h2>
+  <p class="sd reveal rd2">Transparent and updated — what's been built and what's coming.</p>
+  <div style="max-width:680px;">
+    <div class="rm reveal rd2">
+      <div class="rm-line"></div>
+      <div class="rm-items">
+        <div class="rm-item"><div class="rm-dot done"></div><div class="rm-phase">Phase 1 — Completed</div><div class="rm-title">Core Tools Launch</div><div class="rm-desc">LISP scripts, AutoCAD fonts pack, Plot styles — all available for free download.</div><span class="rb rb-done">✓ Done</span></div>
+        <div class="rm-item"><div class="rm-dot done"></div><div class="rm-phase">Phase 2 — Completed</div><div class="rm-title">Dynamo & Revit Library</div><div class="rm-desc">Dynamo scripts, Revit families, Enscape presets, and MEP workflows.</div><span class="rb rb-done">✓ Done</span></div>
+        <div class="rm-item"><div class="rm-dot now"></div><div class="rm-phase">Phase 3 — In Progress</div><div class="rm-title">BIMZ Platform Launch</div><div class="rm-desc">Full BIMZ website, structured learning center, comparison guides, and tool ratings system.</div><span class="rb rb-now">⬤ Active</span></div>
+        <div class="rm-item"><div class="rm-dot"></div><div class="rm-phase">Phase 4 — Q3 2025</div><div class="rm-title">BIMZ Bot — AI Assistant</div><div class="rm-desc">AI chatbot for LISP, Dynamo & Revit. LISP Generator and Dynamo Optimizer tools.</div><span class="rb rb-soon">Coming Soon</span></div>
+        <div class="rm-item"><div class="rm-dot"></div><div class="rm-phase">Phase 5 — Q4 2025</div><div class="rm-title">User Accounts & Dashboard</div><div class="rm-desc">Favorites, download history, personal workspace, tool request system, and community.</div><span class="rb rb-plan">Planned</span></div>
+        <div class="rm-item"><div class="rm-dot"></div><div class="rm-phase">Phase 6 — 2026</div><div class="rm-title">Multi-Language & Mobile App</div><div class="rm-desc">8 languages: Arabic, English, Hindi, French, Spanish, German, Italian, Chinese + PWA app.</div><span class="rb rb-plan">Planned</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-hr"/>
+
+<!-- ══════ CONTACT ══════ -->
+<div class="sw" id="contact">
+  <div class="sl reveal">Get in Touch</div>
+  <h2 class="sh reveal rd1">Contact &<br/>Tool Requests</h2>
+  <p class="sd reveal rd2">Need a specific tool, have a question, or want to collaborate? Reach out directly.</p>
+  <div class="cg">
+    <div class="c-info reveal rd2">
+      <a href="mailto:ziadanter101@gmail.com" class="ci"><div class="ci-icon">✉️</div><div><div class="ci-l">Email</div><div class="ci-v">ziadanter101@gmail.com</div></div></a>
+      <a href="https://wa.me/201030718566" target="_blank" class="ci"><div class="ci-icon">📱</div><div><div class="ci-l">WhatsApp</div><div class="ci-v">+20 103 071 8566</div></div></a>
+      <div class="ci"><div class="ci-icon">🏢</div><div><div class="ci-l">Company</div><div class="ci-v">DIRECT Consulting</div></div></div>
+      <div class="ci"><div class="ci-icon">⚙️</div><div><div class="ci-l">Specialization</div><div class="ci-v">MEP — HVAC · Plumbing · Firefighting</div></div></div>
+      <div class="ci"><div class="ci-icon">🌐</div><div><div class="ci-l">Platform</div><div class="ci-v">bimz.tech (Coming Soon)</div></div></div>
+    </div>
+    <div class="c-form reveal rd3">
+      <div><label class="fl">Your Name</label><input class="fi" type="text" placeholder="Eng. Mohamed Ali"/></div>
+      <div><label class="fl">Email</label><input class="fi" type="email" placeholder="your@email.com"/></div>
+      <div><label class="fl">Request Type</label><select class="fi"><option>🔧 Tool Request</option><option>🐛 Bug Report</option><option>🤝 Collaboration</option><option>💬 General Question</option><option>🎓 Learning Feedback</option></select></div>
+      <div><label class="fl">Message</label><textarea class="fi" placeholder="Describe what you need in detail..."></textarea></div>
+      <button class="btn-send" onclick="showToast('✅ Message sent! Reply within 24 hrs.')">Send Message →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<hr class="section-hr"/>
+<footer>
+  <div class="fg">
+    <div class="foot-brand">
+      <span class="logo-wm"><em>BIM</em>Z</span>
+      <p class="foot-desc">The #1 AI-powered platform for BIM & CAD engineers. Free tools, smart automation, and structured learning — built by engineers, for engineers.</p>
+    </div>
+    <div><div class="fh">Tools</div><div class="flinks"><a href="#tools">LISP Scripts</a><a href="#tools">Dynamo Nodes</a><a href="#tools">Revit Families</a><a href="#tools">AutoCAD Fonts</a><a href="#tools">Plot Styles</a></div></div>
+    <div><div class="fh">Platform</div><div class="flinks"><a href="#learning">Learning Center</a><a href="#ai">BIMZ Bot</a><a href="#roadmap">Roadmap</a><a href="#contact">Request Tool</a><a href="#contact">Contact</a></div></div>
+    <div><div class="fh">About</div><div class="flinks"><a href="#">About Ziad</a><a href="#">DIRECT Consulting</a><a href="mailto:ziadanter101@gmail.com">Email Us</a><a href="https://wa.me/201030718566">WhatsApp</a></div></div>
+  </div>
+  <div class="fb">
+    <div class="fc">© 2025 BIMZ · By Ziad Technology · DIRECT Consulting · All tools free to use</div>
+    <div class="fl2"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Sitemap</a></div>
+  </div>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.transform=`translate(${mx-4}px,${my-4}px)`;});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curR.style.transform=`translate(${rx-16}px,${ry-16}px)`;requestAnimationFrame(a);})();
+document.querySelectorAll('a,button,.ftag,.tc,.lc,.ci,.ai-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{curR.style.width='46px';curR.style.height='46px';});
+  el.addEventListener('mouseleave',()=>{curR.style.width='32px';curR.style.height='32px';});
+});
+
+// CANVAS PARTICLES
+const cv=document.getElementById('bgCanvas'),ctx=cv.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+class P{constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1+.2;this.vx=(Math.random()-.5)*.2;this.vy=(Math.random()-.5)*.2;this.o=Math.random()*.35+.08;}
+  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(56,189,248,${this.o})`;ctx.fill();}
+  upd(){this.x+=this.vx;this.y+=this.vy;if(this.x<0)this.x=W;if(this.x>W)this.x=0;if(this.y<0)this.y=H;if(this.y>H)this.y=0;}}
+for(let i=0;i<80;i++)pts.push(new P());
+function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.upd();p.draw();});
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<110){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(56,189,248,${(1-d/110)*.07})`;ctx.stroke();}
+  }
+  requestAnimationFrame(loop);}
+loop();
+
+// CARD GLOW
+document.querySelectorAll('.tc').forEach(c=>{
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');});
+});
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// COMMAND PALETTE
+function openPal(){document.getElementById('cmd').classList.add('open');document.getElementById('cmdIn').focus();}
+function closePal(){document.getElementById('cmd').classList.remove('open');}
+function navTo(id){closePal();document.querySelector(id)?.scrollIntoView({behavior:'smooth'});}
+document.getElementById('cmd').addEventListener('click',e=>{if(e.target===e.currentTarget)closePal();});
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openPal();}if(e.key==='Escape')closePal();});
+
+// TOAST
+function showToast(msg){const t=document.getElementById('toast'),m=document.getElementById('toastMsg');m.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+// FILTER TOOLS
+function ft(el,cat){
+  document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  document.querySelectorAll('.tc[data-cat]').forEach(c=>{
+    const show=cat==='all'||c.dataset.cat.includes(cat);
+    c.style.opacity=show?'1':'.2';c.style.transform=show?'':'scale(.97)';
+  });
+}
+
+// SEARCH
+document.getElementById('toolSearch').addEventListener('input',function(){
+  const q=this.value.toLowerCase();
+  document.querySelectorAll('.tc').forEach(c=>{
+    const n=(c.querySelector('.tc-name')?.textContent||'').toLowerCase();
+    const d=(c.querySelector('.tc-desc')?.textContent||'').toLowerCase();
+    c.style.display=(!q||n.includes(q)||d.includes(q))?'block':'none';
+  });
+});
+
+// BOT
+function sendBot(){const i=document.getElementById('botIn');if(!i.value.trim())return;showToast('🤖 BIMZ Bot coming in Phase 4!');i.value='';}
+document.getElementById('botIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendBot();});
+</script>
 </body>
 </html>
