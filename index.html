@@ -54,7 +54,7 @@ button {
 
 <h1>Dashboard</h1>
 
-<button id="loginBtn" onclick="login()">Login</button>
+<button id="loginBtn" onclick="login()">Login with Google</button>
 <button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
 
 <div class="card">Dynamo Tools 🔧</div>
@@ -85,7 +85,11 @@ const userName = document.getElementById("userName");
 
 // Login
 window.login = async function () {
-  await signInWithPopup(auth, provider);
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    alert(error.message);
+  }
 };
 
 // Logout
@@ -93,19 +97,29 @@ window.logout = async function () {
   await signOut(auth);
 };
 
-// User State
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline";
-    userName.innerText = "👤 " + user.displayName;
-
-    // 🔥 Save user in database
+// Save User Function
+async function saveUser(user) {
+  try {
     await setDoc(doc(db, "users", user.uid), {
       name: user.displayName,
       email: user.email,
       uid: user.uid
     });
+    console.log("User saved ✅");
+  } catch (e) {
+    console.error("Error saving user ❌", e);
+  }
+}
+
+// Auth State
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline";
+    userName.innerText = "👤 " + user.displayName;
+
+    // 🔥 Save user to Firestore
+    saveUser(user);
 
   } else {
     loginBtn.style.display = "inline";
