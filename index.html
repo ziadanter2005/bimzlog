@@ -410,6 +410,10 @@ body.light-mode select{
   color:#0f172a !important;
   border-color:#e2e8f0 !important;
 }
+body.light-mode{
+  background:#f5f7fb !important;
+  color:#0f172a !important;
+}
 </style>
 </head>
 <body>
@@ -985,6 +989,7 @@ function logout(){
   alert("Logout done"); // مؤقت
   updateAuthUI(false);
 }
+}
 function toggleTheme(){
   document.body.classList.toggle("light-mode");
 
@@ -994,32 +999,6 @@ function toggleTheme(){
   }else{
     localStorage.setItem("theme","dark");
   }
-}
-// Load saved theme
-if(localStorage.getItem("theme") === "light"){
-  document.body.classList.add("light-mode");
-}
-function toggleTheme(){
-  console.log("clicked"); // 👈 ده مهم للتجربة
-
-  document.body.classList.toggle("light-mode");
-
-  if(document.body.classList.contains("light-mode")){
-    localStorage.setItem("theme","light");
-  }else{
-    localStorage.setItem("theme","dark");
-  }
-}
-
-// تحميل الثيم بعد الريفريش
-if(localStorage.getItem("theme") === "light"){
-  document.body.classList.add("light-mode");
-}
-function toggleTheme(){
-  document.body.classList.toggle("light-mode");
-}
-function toggleTheme(){
-  document.body.classList.toggle("light-mode");
 }
 <script>
 </body>
