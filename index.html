@@ -60,6 +60,27 @@ body.light-mode .ai-card{
   background:#ffffff !important;
   border-color:#e2e8f0 !important;
 }
+/* LIGHT MODE */
+body.light-mode{
+  background:#f5f7fb !important;
+  color:#0f172a !important;
+}
+
+body.light-mode nav{
+  background:#ffffff !important;
+  border-bottom:1px solid #e2e8f0 !important;
+}
+
+body.light-mode .tc,
+body.light-mode .ai-card,
+body.light-mode .card3d{
+  background:#ffffff !important;
+  border-color:#e2e8f0 !important;
+}
+body.light-mode{
+  background:#f5f7fb !important;
+  color:#0f172a !important;
+}
 <style>
 :root{
   --bg:#05080f;--bg2:#080d18;--bg3:#0c1220;--card:#0e1525;--card2:#121c30;
@@ -993,6 +1014,9 @@ function toggleTheme(){
 // تحميل الثيم بعد الريفريش
 if(localStorage.getItem("theme") === "light"){
   document.body.classList.add("light-mode");
+}
+function toggleTheme(){
+  document.body.classList.toggle("light-mode");
 }
 function toggleTheme(){
   document.body.classList.toggle("light-mode");
