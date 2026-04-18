@@ -3,40 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>BIMZ</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans&display=swap" rel="stylesheet">
 
 <style>
 body{
   margin:0;
-  font-family:Arial;
-  background:#0b1220;
+  font-family:'DM Sans',sans-serif;
+  background:#05080f;
   color:white;
 }
 
-/* NAVBAR */
-.nav{
+/* NAV */
+nav{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:15px 40px;
+  padding:15px 30px;
   background:#020617;
-  border-bottom:1px solid #1e293b;
 }
 
 .logo{
+  font-family:'Syne';
   font-size:22px;
-  font-weight:bold;
   color:#38bdf8;
-}
-
-.btn{
-  background:#38bdf8;
-  border:none;
-  padding:8px 16px;
-  border-radius:6px;
-  cursor:pointer;
-  color:white;
 }
 
 /* HERO */
@@ -47,41 +37,29 @@ body{
 
 .hero h1{
   font-size:50px;
-  margin:0;
 }
 
 .hero span{
   color:#38bdf8;
 }
 
-.hero p{
-  color:#94a3b8;
-  margin-top:15px;
-}
-
 /* TOOLS */
 .section{
   padding:40px;
-  text-align:center;
 }
 
-.section h2{
-  margin-bottom:30px;
-}
-
-/* GRID */
 .tg{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:25px;
+  gap:20px;
 }
 
 /* CARD */
 .tc{
-  background:#020617;
+  background:#0e1525;
+  border:1px solid #1a2540;
   padding:20px;
   border-radius:12px;
-  border:1px solid #1e293b;
   transition:0.3s;
 }
 
@@ -93,28 +71,26 @@ body{
 .tc-name{
   font-size:18px;
   font-weight:bold;
-  margin-top:10px;
 }
 
 .tc-desc{
-  color:#94a3b8;
+  color:#8899bb;
   margin-top:5px;
 }
 
 .tc-meta{
   display:flex;
   justify-content:space-between;
-  margin-top:15px;
-  font-size:14px;
+  margin-top:10px;
 }
 
 .btn-download{
   margin-top:15px;
   width:100%;
   padding:10px;
+  background:#38bdf8;
   border:none;
   border-radius:8px;
-  background:#38bdf8;
   color:white;
   cursor:pointer;
 }
@@ -122,31 +98,26 @@ body{
 .btn-download:hover{
   background:#0ea5e9;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<div class="nav">
+<nav>
   <div class="logo">BIMZ</div>
-  <button class="btn">GET STARTED</button>
-</div>
+</nav>
 
-<!-- HERO -->
 <div class="hero">
   <h1>Welcome to <span>BIMZ</span></h1>
-  <p>The #1 smart platform for BIM & CAD engineers</p>
+  <p>Smart BIM & CAD Platform</p>
 </div>
 
-<!-- TOOLS -->
 <div class="section">
-  <h2>BIMZ Tools</h2>
+  <h2>Tools</h2>
 
-  <div class="tg">
+  <div class="tg" id="toolsContainer">
 
-    <!-- TOOL 1 -->
+    <!-- TOOL -->
     <div class="tc">
       <div class="tc-name">Dynamo Auto Tag</div>
       <div class="tc-desc">Dynamo Script</div>
@@ -159,7 +130,6 @@ body{
       <button class="btn-download">Download</button>
     </div>
 
-    <!-- TOOL 2 -->
     <div class="tc">
       <div class="tc-name">LISP Find Replace</div>
       <div class="tc-desc">AutoCAD LISP</div>
@@ -172,7 +142,6 @@ body{
       <button class="btn-download">Download</button>
     </div>
 
-    <!-- TOOL 3 -->
     <div class="tc">
       <div class="tc-name">Revit Family Pack</div>
       <div class="tc-desc">Revit Families</div>
