@@ -3,113 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIMZ Dashboard</title>
+
+<title>BIMZ</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#0b132b;
-  color:#fff;
+  background:#0b1220;
+  color:white;
+}
+
+/* NAVBAR */
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 40px;
+  background:#020617;
+  border-bottom:1px solid #1e293b;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:bold;
+  color:#38bdf8;
+}
+
+.btn{
+  background:#38bdf8;
+  border:none;
+  padding:8px 16px;
+  border-radius:6px;
+  cursor:pointer;
+  color:white;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.hero h1{
+  font-size:50px;
+  margin:0;
+}
+
+.hero span{
+  color:#38bdf8;
+}
+
+.hero p{
+  color:#94a3b8;
+  margin-top:15px;
+}
+
+/* TOOLS */
+.section{
+  padding:40px;
   text-align:center;
 }
 
-h1{margin-top:30px;}
-
-.container{
-  max-width:900px;
-  margin:auto;
+.section h2{
+  margin-bottom:30px;
 }
 
-.tools{
-  display:flex;
-  flex-wrap:wrap;
-  gap:20px;
-  justify-content:center;
-  margin-top:30px;
+/* GRID */
+.tg{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:25px;
 }
 
-.card{
+/* CARD */
+.tc{
   background:#020617;
   padding:20px;
-  border-radius:15px;
-  width:250px;
-  box-shadow:0 0 20px rgba(0,0,0,0.5);
+  border-radius:12px;
+  border:1px solid #1e293b;
+  transition:0.3s;
 }
 
-button{
-  background:#38bdf8;
-  border:none;
-  padding:10px 20px;
-  border-radius:8px;
-  cursor:pointer;
+.tc:hover{
+  transform:translateY(-5px);
+  border-color:#38bdf8;
+}
+
+.tc-name{
+  font-size:18px;
+  font-weight:bold;
   margin-top:10px;
 }
+
+.tc-desc{
+  color:#94a3b8;
+  margin-top:5px;
+}
+
+.tc-meta{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
+  font-size:14px;
+}
+
+.btn-download{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#38bdf8;
+  color:white;
+  cursor:pointer;
+}
+
+.btn-download:hover{
+  background:#0ea5e9;
+}
+
 </style>
 </head>
 
 <body>
 
-<h1>BIMZ Tools</h1>
-
-<div class="container">
-  <div class="tools" id="toolsContainer"></div>
+<!-- NAV -->
+<div class="nav">
+  <div class="logo">BIMZ</div>
+  <button class="btn">GET STARTED</button>
 </div>
 
-<!-- FIREBASE -->
-<script type="module">
+<!-- HERO -->
+<div class="hero">
+  <h1>Welcome to <span>BIMZ</span></h1>
+  <p>The #1 smart platform for BIM & CAD engineers</p>
+</div>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+<!-- TOOLS -->
+<div class="section">
+  <h2>BIMZ Tools</h2>
 
-// 🔥 Firebase config بتاعك
-const firebaseConfig = {
-  apiKey: "AIzaSyD4qL5kQjBWNZg1JqDvYoRal3d_EODmoA4",
-  authDomain: "bimz-439c4.firebaseapp.com",
-  projectId: "bimz-439c4",
-  storageBucket: "bimz-439c4.firebasestorage.app",
-  messagingSenderId: "755613694385",
-  appId: "1:755613694385:web:3e4390196df61f45732590"
-};
+  <div class="tg">
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    <!-- TOOL 1 -->
+    <div class="tc">
+      <div class="tc-name">Dynamo Auto Tag</div>
+      <div class="tc-desc">Dynamo Script</div>
 
-// تحميل الأدوات
-async function loadTools(){
-  const container = document.getElementById("toolsContainer");
-  container.innerHTML = "";
-
-  const snapshot = await getDocs(collection(db,"tools"));
-
-  snapshot.forEach(docSnap=>{
-    const t = docSnap.data();
-    const id = docSnap.id;
-
-    container.innerHTML += `
-      <div class="card">
-        <h3>${t.name}</h3>
-        <p>${t.type}</p>
-        <p>Downloads: ${t.downloads || 0}</p>
-        <button onclick="downloadTool('${id}','${t.download}')">Download</button>
+      <div class="tc-meta">
+        <div>⭐ 5.0</div>
+        <div>↓ 2</div>
       </div>
-    `;
-  });
-}
 
-// تحميل + عداد
-window.downloadTool = async (id,link)=>{
-  await updateDoc(doc(db,"tools",id),{
-    downloads: increment(1)
-  });
+      <button class="btn-download">Download</button>
+    </div>
 
-  window.open(link,"_blank");
-};
+    <!-- TOOL 2 -->
+    <div class="tc">
+      <div class="tc-name">LISP Find Replace</div>
+      <div class="tc-desc">AutoCAD LISP</div>
 
-// تشغيل
-loadTools();
+      <div class="tc-meta">
+        <div>⭐ 4.8</div>
+        <div>↓ 5</div>
+      </div>
 
-</script>
+      <button class="btn-download">Download</button>
+    </div>
+
+    <!-- TOOL 3 -->
+    <div class="tc">
+      <div class="tc-name">Revit Family Pack</div>
+      <div class="tc-desc">Revit Families</div>
+
+      <div class="tc-meta">
+        <div>⭐ 4.9</div>
+        <div>↓ 10</div>
+      </div>
+
+      <button class="btn-download">Download</button>
+    </div>
+
+  </div>
+
+</div>
 
 </body>
 </html>
