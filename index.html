@@ -395,7 +395,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
     <div class="ftag" onclick="ft(this,'ai')">AI Tools</div>
   </div>
 
-  <div class="tg">
+  <div class="tg" id="toolsContainer">
     <!-- FEATURED -->
     <div class="tc sp2 reveal" data-cat="autocad mep">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;">
@@ -692,6 +692,75 @@ document.getElementById('toolSearch').addEventListener('input',function(){
 // BOT
 function sendBot(){const i=document.getElementById('botIn');if(!i.value.trim())return;showToast('🤖 BIMZ Bot coming in Phase 4!');i.value='';}
 document.getElementById('botIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendBot();});
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD4qL5kQjBWNZg1JqDvYoRal3d_EODmoA4",
+  authDomain: "bimz-439c4.firebaseapp.com",
+  projectId: "bimz-439c4",
+  storageBucket: "bimz-439c4.firebasestorage.app",
+  messagingSenderId: "755613694385",
+  appId: "1:755613694385:web:3e4390196df61f45732590"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// تحميل الأدوات
+async function loadTools(){
+
+  const container = document.getElementById("toolsContainer");
+
+  const snapshot = await getDocs(collection(db,"tools"));
+
+  snapshot.forEach(docSnap=>{
+    const t = docSnap.data();
+    const id = docSnap.id;
+
+    const card = document.createElement("div");
+    card.className = "tc reveal";
+
+    card.innerHTML = `
+      <div class="tc-top">
+        <div class="tc-icon">⚡</div>
+        <div class="tc-badges">
+          <span class="badge b-free">Free</span>
+        </div>
+      </div>
+
+      <div class="tc-name">${t.name || "No Name"}</div>
+      <div class="tc-desc">${t.type || "Tool"}</div>
+
+      <div class="tc-meta">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-dl">↓ ${t.downloads || 0}</div>
+      </div>
+
+      <button onclick="downloadTool('${id}','${t.download}')"
+      style="margin-top:10px;background:#38bdf8;border:none;padding:8px 15px;border-radius:6px;cursor:pointer;">
+      Download
+      </button>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// تحميل + عداد
+window.downloadTool = async (id,link)=>{
+  await updateDoc(doc(db,"tools",id),{
+    downloads: increment(1)
+  });
+
+  window.open(link,"_blank");
+};
+
+loadTools();
+
 </script>
 </body>
 </html>
