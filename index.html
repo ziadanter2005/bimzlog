@@ -429,7 +429,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
       <div class="tc-bar"></div>
     </div>
 
-    <div class="tc reveal" data-cat="revit dynamo mep" onclick="openTool('dynamo')">
+    <div class="tc reveal" data-cat="revit dynamo mep">
       <div class="tc-top"><div class="tc-icon" style="background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);">🔷</div><div class="tc-badges"><span class="badge b-new">New</span><span class="badge b-free">Free</span></div></div>
       <div class="tc-name">Dynamo Scripts</div>
       <div class="tc-desc">Visual programming for Revit — automate families, parameters, MEP schedules, and clash workflows.</div>
@@ -724,31 +724,27 @@ async function loadTools(){
     const card = document.createElement("div");
     card.className = "tc reveal";
 
-   card.innerHTML = `
-  <div onclick="openTool('${id}')" style="cursor:pointer">
-
-    <div class="tc-top">
-      <div class="tc-icon">⚡</div>
-      <div class="tc-badges">
-        <span class="badge b-free">Free</span>
+    card.innerHTML = `
+      <div class="tc-top">
+        <div class="tc-icon">⚡</div>
+        <div class="tc-badges">
+          <span class="badge b-free">Free</span>
+        </div>
       </div>
-    </div>
 
-    <div class="tc-name">${t.name || "No Name"}</div>
-    <div class="tc-desc">${t.type || "Tool"}</div>
+      <div class="tc-name">${t.name || "No Name"}</div>
+      <div class="tc-desc">${t.type || "Tool"}</div>
 
-    <div class="tc-meta">
-      <div class="tc-stars">★★★★★</div>
-      <div class="tc-dl">↓ ${t.downloads || 0}</div>
-    </div>
+      <div class="tc-meta">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-dl">↓ ${t.downloads || 0}</div>
+      </div>
 
-  </div>
-
-  <button onclick="downloadTool('${id}','${t.download}')"
-  style="margin-top:10px;background:#38bdf8;border:none;padding:8px 15px;border-radius:6px;cursor:pointer;">
-  Download
-  </button>
-`;
+      <button onclick="downloadTool('${id}','${t.download}')"
+      style="margin-top:10px;background:#38bdf8;border:none;padding:8px 15px;border-radius:6px;cursor:pointer;">
+      Download
+      </button>
+    `;
 
     container.appendChild(card);
   });
@@ -756,21 +752,9 @@ async function loadTools(){
 
 // تحميل + عداد
 window.downloadTool = async (id,link)=>{
-
-  // ❌ لو مش عامل Login
-  if(!auth.currentUser){
-    alert("Please login first 🔒");
-    return;
-  }
-
-  // ✅ زود العداد
   await updateDoc(doc(db,"tools",id),{
     downloads: increment(1)
   });
-
-  // 🚀 تحميل
-  window.open(link,"_blank");
-};
 
   window.open(link,"_blank");
 };
@@ -823,12 +807,6 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-function openTool(id){
-  window.location.href = "tool.html?id=" + id;
-}
-function openTool(id){
-  window.location.href = "tool.html?id=" + id;
-}
 </script>
 </body>
 </html>
