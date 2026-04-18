@@ -327,7 +327,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
     <div class="nav-search" onclick="openPal()">
       <span>🔍</span><span>Search...</span><kbd>⌘K</kbd>
     </div>
-    <a href="#contact" class="btn-nav">Get Started</a>
+    <button class="btn-nav" onclick="login()">Login</button>
   </div>
 </nav>
 
@@ -760,6 +760,52 @@ window.downloadTool = async (id,link)=>{
 };
 
 loadTools();
+
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD4qL5kQjBWNZg1JqDvYoRal3d_EODmoA4",
+  authDomain: "bimz-439c4.firebaseapp.com",
+  projectId: "bimz-439c4",
+  storageBucket: "bimz-439c4.firebasestorage.app",
+  messagingSenderId: "755613694385",
+  appId: "1:755613694385:web:3e4390196df61f45732590"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// 🔥 Login
+window.login = async function(){
+  try{
+    await signInWithPopup(auth, provider);
+  }catch(e){
+    console.log(e);
+  }
+};
+
+// 🔥 Logout
+window.logout = async function(){
+  await signOut(auth);
+};
+
+// 🔥 تغيير شكل الزر
+onAuthStateChanged(auth, (user) => {
+  const btn = document.querySelector(".btn-nav");
+
+  if(user){
+    btn.innerText = user.displayName;
+    btn.onclick = logout;
+  }else{
+    btn.innerText = "Login";
+    btn.onclick = login;
+  }
+});
 
 </script>
 </body>
