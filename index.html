@@ -57,13 +57,12 @@ button {
 <button id="loginBtn" onclick="login()">Login with Google</button>
 <button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
 
-<div class="card">Dynamo Tools 🔧</div>
-<div class="card">LISP Tools ⚡</div>
+<div id="toolsContainer"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD4qL5kQjBWNZg1JqDvYoRal3d_EODmoA4",
@@ -82,6 +81,7 @@ const provider = new GoogleAuthProvider();
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const userName = document.getElementById("userName");
+const toolsContainer = document.getElementById("toolsContainer");
 
 // Login
 window.login = async function () {
@@ -97,18 +97,35 @@ window.logout = async function () {
   await signOut(auth);
 };
 
-// Save User Function
+// Save User
 async function saveUser(user) {
-  try {
-    await setDoc(doc(db, "users", user.uid), {
-      name: user.displayName,
-      email: user.email,
-      uid: user.uid
-    });
-    console.log("User saved ✅");
-  } catch (e) {
-    console.error("Error saving user ❌", e);
-  }
+  await setDoc(doc(db, "users", user.uid), {
+    name: user.displayName,
+    email: user.email,
+    uid: user.uid
+  });
+}
+
+// Load Tools
+async function loadTools() {
+  const querySnapshot = await getDocs(collection(db, "tools"));
+  toolsContainer.innerHTML = "";
+
+  querySnapshot.forEach((doc) => {
+    const tool = doc.data();
+
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${tool.name}</h3>
+      <p>${tool.type}</p>
+      <a href="${tool.download}" target="_blank">
+        <button>Download</button>
+      </a>
+    `;
+
+    toolsContainer.appendChild(div);
+  });
 }
 
 // Auth State
@@ -118,13 +135,14 @@ onAuthStateChanged(auth, (user) => {
     logoutBtn.style.display = "inline";
     userName.innerText = "👤 " + user.displayName;
 
-    // 🔥 Save user to Firestore
     saveUser(user);
+    loadTools();
 
   } else {
     loginBtn.style.display = "inline";
     logoutBtn.style.display = "none";
     userName.innerText = "";
+    toolsContainer.innerHTML = "";
   }
 });
 </script>
