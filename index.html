@@ -355,7 +355,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
     <div class="nav-search" onclick="openPal()">
       <span>🔍</span><span>Search...</span><kbd>⌘K</kbd>
     </div>
-    <button class="btn-nav" onclick="login()">Login</button>
+    <button id="authBtn" class="btn-nav" onclick="login()">Login</button>
   </div>
 </nav>
 
@@ -824,7 +824,7 @@ window.logout = async function(){
 
 // 🔥 تغيير شكل الزر
 onAuthStateChanged(auth, (user) => {
-  const btn = document.querySelector(".btn-nav");
+  const btn = document.getElementById("authBtn");
 
   if(user){
     btn.innerText = user.displayName;
@@ -855,5 +855,19 @@ function toggleTheme(){
 }
 
 </script>
+// AUTH BUTTON CONTROL
+function updateAuthUI(user){
+  const btn = document.getElementById("authBtn");
+
+  if(!btn) return;
+
+  if(user){
+    btn.innerText = "Logout";
+    btn.onclick = logout;
+  }else{
+    btn.innerText = "Login";
+    btn.onclick = login;
+  }
+}
 </body>
 </html>
