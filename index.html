@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIMZ Login Test</title>
+</head>
+
+<body style="font-family:Arial;text-align:center;margin-top:100px;">
+
+<h1>BIMZ Platform</h1>
+
+<button onclick="login()" style="padding:12px 25px;font-size:18px;cursor:pointer;">
+Login with Google
+</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4qL5kQjBWNZg1JqDvYoRal3d_EODmoA4",
+    authDomain: "bimz-439c4.firebaseapp.com",
+    projectId: "bimz-439c4",
+    storageBucket: "bimz-439c4.firebasestorage.app",
+    messagingSenderId: "755613694385",
+    appId: "1:755613694385:web:3e4390196df61f45732590"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  window.login = async function () {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      alert("Welcome " + result.user.displayName);
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  };
+</script>
+
+</body>
+</html>
