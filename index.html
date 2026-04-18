@@ -902,6 +902,22 @@ function toggleTheme(){
 if(localStorage.getItem("theme") === "light"){
   document.body.classList.add("light-mode");
 }
-<script>
+function toggleTheme(){
+  console.log("clicked"); // 👈 ده مهم للتجربة
+
+  document.body.classList.toggle("light-mode");
+
+  if(document.body.classList.contains("light-mode")){
+    localStorage.setItem("theme","light");
+  }else{
+    localStorage.setItem("theme","dark");
+  }
+}
+
+// تحميل الثيم بعد الريفريش
+if(localStorage.getItem("theme") === "light"){
+  document.body.classList.add("light-mode");
+}
+  <script>
 </body>
 </html>
