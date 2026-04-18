@@ -6,81 +6,6 @@
 <meta name="description" content="BIMZ — The #1 AI-powered BIM & CAD platform. Free LISP scripts, Dynamo workflows, Revit families, and smart engineering tools."/>
 <title>BIMZ — Smart BIM & CAD Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-body.light{
-  background:#f8fafc;
-  color:#0f172a;
-}
-
-body.light nav{
-  background:#ffffff;
-  border-bottom:1px solid #e2e8f0;
-}
-
-body.light .tc{
-  background:#ffffff;
-  border-color:#e2e8f0;
-}
-
-body.light .tc-desc{
-  color:#475569;
-}
-
-body.light .nav-links a{
-  color:#334155;
-}
-
-body.light .nav-search{
-  background:#ffffff;
-  border-color:#e2e8f0;
-}
- body.light-mode{
-  --bg:#f5f7fb;
-  --bg2:#ffffff;
-  --bg3:#eef2ff;
-  --card:#ffffff;
-  --card2:#f1f5f9;
-  --border:#dbeafe;
-  --t1:#0f172a;
-  --t2:#475569;
-  --t3:#94a3b8;
-}
-body.light-mode{
-  background:#f8fafc !important;
-  color:#0f172a !important;
-}
-
-body.light-mode nav{
-  background:#ffffff !important;
-  border-bottom:1px solid #e2e8f0 !important;
-}
-
-body.light-mode .card3d,
-body.light-mode .tc,
-body.light-mode .ai-card{
-  background:#ffffff !important;
-  border-color:#e2e8f0 !important;
-}
-/* LIGHT MODE */
-body.light-mode{
-  background:#f5f7fb !important;
-  color:#0f172a !important;
-}
-
-body.light-mode nav{
-  background:#ffffff !important;
-  border-bottom:1px solid #e2e8f0 !important;
-}
-
-body.light-mode .tc,
-body.light-mode .ai-card,
-body.light-mode .card3d{
-  background:#ffffff !important;
-  border-color:#e2e8f0 !important;
-}
-body.light-mode{
-  background:#f5f7fb !important;
-  color:#0f172a !important;
-}
 <style>
 :root{
   --bg:#05080f;--bg2:#080d18;--bg3:#0c1220;--card:#0e1525;--card2:#121c30;
@@ -350,66 +275,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
   .fb{flex-direction:column;gap:.75rem;text-align:center;}
   .bimz-vis{display:none;}
 }
-body.light-mode{
-  --bg:#f5f7fb;
-  --bg2:#ffffff;
-  --bg3:#eef2ff;
-  --card:#ffffff;
-  --card2:#f1f5f9;
-  --border:#dbeafe;
-  --t1:#0f172a;
-  --t2:#475569;
-  --t3:#94a3b8;
-}
-
-/* دعم إضافي */
-body.light-mode{
-  background:#f5f7fb;
-  color:#0f172a;
-}
-/* LIGHT MODE FORCE */
-body.light-mode{
-  background:#f5f7fb !important;
-  color:#0f172a !important;
-}
-
-/* NAV */
-body.light-mode nav{
-  background:#ffffff !important;
-  border-bottom:1px solid #e2e8f0 !important;
-}
-
-/* CARDS */
-body.light-mode .tc,
-body.light-mode .ai-card,
-body.light-mode .lc,
-body.light-mode .ci,
-body.light-mode .card3d{
-  background:#ffffff !important;
-  border-color:#e2e8f0 !important;
-}
-
-/* TEXT */
-body.light-mode .tc-desc,
-body.light-mode .hero-desc,
-body.light-mode .sd{
-  color:#475569 !important;
-}
-
-/* SEARCH */
-body.light-mode .search-wrap{
-  background:#ffffff !important;
-  border-color:#e2e8f0 !important;
-}
-
-/* INPUT */
-body.light-mode input,
-body.light-mode textarea,
-body.light-mode select{
-  background:#ffffff !important;
-  color:#0f172a !important;
-  border-color:#e2e8f0 !important;
-}
 </style>
 </head>
 <body>
@@ -459,11 +324,10 @@ body.light-mode select{
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-r">
-    <button class="btn-nav" onclick="toggleTheme()">🌙</button>
     <div class="nav-search" onclick="openPal()">
       <span>🔍</span><span>Search...</span><kbd>⌘K</kbd>
     </div>
-    <button id="authBtn" class="btn-nav" onclick="login()">Login</button>
+    <button class="btn-nav" onclick="login()">Login</button>
   </div>
 </nav>
 
@@ -932,7 +796,7 @@ window.logout = async function(){
 
 // 🔥 تغيير شكل الزر
 onAuthStateChanged(auth, (user) => {
-  const btn = document.getElementById("authBtn");
+  const btn = document.querySelector(".btn-nav");
 
   if(user){
     btn.innerText = user.displayName;
@@ -944,83 +808,5 @@ onAuthStateChanged(auth, (user) => {
 });
 
 </script>
-
-// لو المستخدم مختار Light قبل كده
-if(localStorage.getItem("theme") === "light"){
-  document.body.classList.add("light");
-}
-
-// زرار التبديل
-function toggleTheme(){
-  document.body.classList.toggle("light");
-
-  if(document.body.classList.contains("light")){
-    localStorage.setItem("theme","light");
-  }else{
-    localStorage.setItem("theme","dark");
-  }
-}
-
-</script>
-// AUTH BUTTON CONTROL
-function updateAuthUI(user){
-  const btn = document.getElementById("authBtn");
-
-  if(!btn) return;
-
-  if(user){
-    btn.innerText = "Logout";
-    btn.onclick = logout;
-  }else{
-    btn.innerText = "Login";
-    btn.onclick = login;
-  }
-}
-function login(){
-  alert("Login function here"); // مؤقت
-  updateAuthUI(true);
-}
-
-function logout(){
-  alert("Logout done"); // مؤقت
-  updateAuthUI(false);
-}
-function toggleTheme(){
-  document.body.classList.toggle("light-mode");
-
-  // حفظ الوضع
-  if(document.body.classList.contains("light-mode")){
-    localStorage.setItem("theme","light");
-  }else{
-    localStorage.setItem("theme","dark");
-  }
-}
-// Load saved theme
-if(localStorage.getItem("theme") === "light"){
-  document.body.classList.add("light-mode");
-}
-function toggleTheme(){
-  console.log("clicked"); // 👈 ده مهم للتجربة
-
-  document.body.classList.toggle("light-mode");
-
-  if(document.body.classList.contains("light-mode")){
-    localStorage.setItem("theme","light");
-  }else{
-    localStorage.setItem("theme","dark");
-  }
-}
-
-// تحميل الثيم بعد الريفريش
-if(localStorage.getItem("theme") === "light"){
-  document.body.classList.add("light-mode");
-}
-function toggleTheme(){
-  document.body.classList.toggle("light-mode");
-}
-function toggleTheme(){
-  document.body.classList.toggle("light-mode");
-}
-<script>
 </body>
 </html>
