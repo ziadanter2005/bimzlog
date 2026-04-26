@@ -310,12 +310,38 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">
-    <div class="logo-box">
-      <svg viewBox="0 0 26 26" fill="none"><path d="M4 4h18L8 22h14" stroke="url(#ng)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="ng" x1="4" y1="4" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#f43f5e"/></linearGradient></defs></svg>
+  <a href="#" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;gap:12px;">
+
+    <div style="
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    border:1px solid rgba(56,189,248,.25);
+    background:#081122;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    font-weight:900;
+    background-image:linear-gradient(135deg,#38bdf8,#8b5cf6);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    box-shadow:0 0 10px rgba(56,189,248,.12);
+    ">
+    Z
     </div>
-    <div class="logo-wm"><em>BIM</em>Z</div>
+
+    <div style="
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:1px;
+    color:#38bdf8;
+    ">
+    BIMZ
+    </div>
+
   </a>
+
   <ul class="nav-links">
     <li><a href="#tools">Tools</a></li>
     <li><a href="#ai">AI</a></li>
@@ -323,10 +349,12 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);max-width:
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+
   <div class="nav-r">
     <div class="nav-search" onclick="openPal()">
       <span>🔍</span><span>Search...</span><kbd>⌘K</kbd>
     </div>
+
     <button class="btn-nav" onclick="login()">Login</button>
   </div>
 </nav>
