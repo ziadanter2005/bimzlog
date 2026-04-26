@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BIMZ Admin Panel</title>
 
+<style>
+body{
+background:#0b1220;
+font-family:Arial;
+color:white;
+padding:40px;
+}
+
+.box{
+max-width:500px;
+margin:auto;
+background:#111827;
+padding:30px;
+border-radius:15px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:10px;
+margin-bottom:15px;
+border:none;
+border-radius:8px;
+background:#1f2937;
+color:white;
+}
+
+button{
+width:100%;
+padding:14px;
+background:#38bdf8;
+border:none;
+border-radius:8px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#0ea5e9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>BIMZ Admin Upload</h2>
+
+<input type="text" id="name" placeholder="Tool Name">
+
+<select id="type">
+<option>AutoCAD</option>
+<option>Dynamo</option>
+<option>Revit</option>
+<option>Fonts</option>
+<option>Plot Style</option>
+<option>Enscape</option>
+</select>
+
+<input type="text" id="link" placeholder="Download Link">
+
+<button onclick="uploadTool()">UPLOAD</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD4qL5kQjBWNZg1JqDvYoRal3d_EODmoA4",
+  authDomain: "bimz-439c4.firebaseapp.com",
+  projectId: "bimz-439c4",
+  storageBucket: "bimz-439c4.firebasestorage.app",
+  messagingSenderId: "755613694385",
+  appId: "1:755613694385:web:3e4390196df61f45732590",
+  measurementId: "G-JV2JYS7ZQ1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.uploadTool = async function(){
+
+const name = document.getElementById("name").value;
+const type = document.getElementById("type").value;
+const link = document.getElementById("link").value;
+
+await addDoc(collection(db,"tools"),{
+name:name,
+type:type,
+download:link,
+downloads:0
+});
+
+alert("Uploaded Successfully");
+
+};
+
+</script>
+
+</body>
+</html>
