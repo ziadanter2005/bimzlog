@@ -722,7 +722,7 @@ async function loadTools(){
     const id = docSnap.id;
 
     const card = document.createElement("div");
-    card.className = "tc reveal";
+    ccard.className = "tc";
 
     card.innerHTML = `
       <div class="tc-top">
@@ -746,7 +746,7 @@ async function loadTools(){
       </button>
     `;
 
-    container.prepend(card);
+    container.appendChild(card);
   });
 }
 
