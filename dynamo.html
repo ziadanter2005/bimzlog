@@ -34,7 +34,8 @@ body::after{
 content:"";
 position:fixed;
 inset:0;
-background:radial-gradient(circle at top right,#0ea5e955,transparent 30%),
+background:
+radial-gradient(circle at top right,#0ea5e955,transparent 30%),
 radial-gradient(circle at bottom left,#2563eb33,transparent 30%);
 z-index:-1;
 }
@@ -46,11 +47,39 @@ align-items:center;
 padding:20px 60px;
 border-bottom:1px solid rgba(255,255,255,.08);
 backdrop-filter:blur(10px);
+position:sticky;
+top:0;
+background:rgba(3,7,18,.85);
+z-index:100;
 }
 
 .logo{
-font-size:28px;
-font-weight:700;
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.logo-box{
+width:38px;
+height:38px;
+border-radius:10px;
+border:1px solid rgba(56,189,248,.25);
+background:#081122;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+font-weight:900;
+background-image:linear-gradient(135deg,#38bdf8,#8b5cf6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+box-shadow:0 0 10px rgba(56,189,248,.12);
+}
+
+.logo-text{
+font-size:30px;
+font-weight:900;
+letter-spacing:1px;
 color:#38bdf8;
 }
 
@@ -59,6 +88,8 @@ color:white;
 text-decoration:none;
 margin-left:25px;
 opacity:.8;
+font-weight:600;
+transition:.3s;
 }
 
 nav a:hover{
@@ -82,7 +113,7 @@ background:linear-gradient(90deg,#38bdf8,#6366f1);
 .hero p{
 font-size:20px;
 color:#94a3b8;
-max-width:700px;
+max-width:760px;
 line-height:1.7;
 }
 
@@ -121,6 +152,7 @@ margin-bottom:10px;
 color:#94a3b8;
 line-height:1.7;
 margin-bottom:20px;
+min-height:72px;
 }
 
 .btn{
@@ -131,10 +163,12 @@ color:#000;
 font-weight:bold;
 border-radius:10px;
 text-decoration:none;
+transition:.3s;
 }
 
 .btn:hover{
 background:#67d3ff;
+transform:scale(1.03);
 }
 
 .footer{
@@ -143,29 +177,64 @@ padding:30px;
 color:#64748b;
 border-top:1px solid rgba(255,255,255,.05);
 }
+
+@media(max-width:768px){
+
+nav{
+padding:20px;
+flex-direction:column;
+gap:15px;
+}
+
+.hero{
+padding:50px 20px 20px;
+}
+
+.hero h1{
+font-size:42px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+.tools{
+padding:20px;
+}
+
+nav a{
+margin:0 10px;
+}
+}
 </style>
 </head>
 
 <body>
 
 <nav>
-<div class="logo" style="display:flex;align-items:center;gap:12px;">  <div style=" width:42px; height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:22px; color:#38bdf8; background:#081122; box-shadow:0 0 12px rgba(56,189,248,.15); "> Z </div>  <div style=" font-size:30px; font-weight:900; letter-spacing:1px; background:linear-gradient(90deg,#38bdf8,#6366f1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; "> BIMZ </div>  </div>
+
+<div class="logo">
+<div class="logo-box">Z</div>
+<div class="logo-text">BIMZ</div>
+</div>
 
 <div>
 <a href="index.html">Home</a>
-<a href="#">Tools</a>
+<a href="#tools">Tools</a>
 <a href="#">Contact</a>
 </div>
+
 </nav>
 
 <section class="hero">
 <h1>Dynamo Scripts</h1>
+
 <p>
 Professional Dynamo tools for Revit automation, BIM workflows, parameter control, sheet creation, clash support and smart engineering tasks.
 </p>
 </section>
 
-<section class="tools">
+<section class="tools" id="tools">
 
 <div class="card">
 <div class="icon">⚡</div>
